@@ -4,21 +4,35 @@
   <url>
     <loc>http://localhost:1313/docs/installation/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/core/router/</loc>
+    <loc>http://localhost:1313/docs/foundation/router/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/core/_middleware/</loc>
+    <loc>http://localhost:1313/docs/foundation/_middleware/</loc>
   </url><url>
     <loc>http://localhost:1313/blog/</loc>
   </url><url>
+    <loc>http://localhost:1313/docs/architecture/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/foundation/cache/</loc>
+  </url><url>
     <loc>http://localhost:1313/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/core/</loc>
+    <loc>http://localhost:1313/docs/foundation/command/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/foundation/exception_handler/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/foundation/</loc>
   </url><url>
     <loc>http://localhost:1313/docs/server/http_server/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/architecture/lifecycle/</loc>
   </url><url>
     <loc>http://localhost:1313/docs/</loc>
   </url><url>
     <loc>http://localhost:1313/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/foundation/request/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/foundation/response/</loc>
   </url><url>
     <loc>http://localhost:1313/docs/server/</loc>
   </url><url>

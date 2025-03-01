@@ -135,10 +135,10 @@ credentials in &lt;code&gt;.env&lt;/code&gt; and create a users table. This can 
     
     <item>
       <title>Router</title>
-      <link>http://localhost:1313/docs/core/router/</link>
+      <link>http://localhost:1313/docs/foundation/router/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/docs/core/router/</guid>
+      <guid>http://localhost:1313/docs/foundation/router/</guid>
       <description>
         
         
@@ -148,10 +148,49 @@ credentials in &lt;code&gt;.env&lt;/code&gt; and create a users table. This can 
     
     <item>
       <title>Middleware</title>
-      <link>http://localhost:1313/docs/core/_middleware/</link>
+      <link>http://localhost:1313/docs/foundation/_middleware/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/docs/core/_middleware/</guid>
+      <guid>http://localhost:1313/docs/foundation/_middleware/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Cache</title>
+      <link>http://localhost:1313/docs/foundation/cache/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/docs/foundation/cache/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Command</title>
+      <link>http://localhost:1313/docs/foundation/command/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/docs/foundation/command/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Exception Handler</title>
+      <link>http://localhost:1313/docs/foundation/exception_handler/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/docs/foundation/exception_handler/</guid>
       <description>
         
         
@@ -252,6 +291,142 @@ credentials in &lt;code&gt;.env&lt;/code&gt; and create a users table. This can 
     </item>
     
     <item>
+      <title>Lifecycle</title>
+      <link>http://localhost:1313/docs/architecture/lifecycle/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/docs/architecture/lifecycle/</guid>
+      <description>
+        
+        
+        &lt;p&gt;ODY has two modes of operation; It can be run as a regular PHP application like we are used to, or it can run on a
+coroutine based server developed on top of Swoole. To understand the lifecycle of a coroutine based application a good
+understanding of Swoole is required.&lt;/p&gt;
+&lt;p&gt;Both modes share the same application core components. (see section foundation) While developing ODY we stived to keep
+things as clear and familiar as possible to make development as easy as possible if you are already accustomed to
+frameworks like Laravel and Symfony.&lt;/p&gt;
+&lt;h2&gt;Coroutines&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;coroutines&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#coroutines&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;What are coroutines?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;what-are-coroutines&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#what-are-coroutines&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Coroutines effectively solve the challenge of asynchronous non-blocking systems, but what exactly are they?&lt;/p&gt;
+&lt;p&gt;By definition, coroutines are lightweight threads managed by user code rather than the OS kernel, meaning the user
+controls execution switches instead of the OS allocating CPU time. In Swoole, each Worker process has a coroutine
+scheduler that switches execution when an I/O operation occurs or when explicitly triggered. Since a process runs
+coroutines one at a time, there’s no need for synchronization locks like in multi-threaded programming.&lt;/p&gt;
+&lt;p&gt;Within a coroutine, execution remains sequential. In an HTTP coroutine server, each request runs in its own coroutine.
+For example, if coroutine A handles request A and coroutine B handles request B, execution switches when coroutine A
+encounters an I/O operation (e.g., a MySQL query). While coroutine A waits for the database response, coroutine B
+executes. Once the I/O completes, execution returns to coroutine A, ensuring non-blocking execution.&lt;/p&gt;
+&lt;p&gt;However, to enable coroutine switching, operations like MySQL queries must be asynchronous and non-blocking—otherwise,
+the scheduler cannot switch coroutines, causing blocking, which defeats the purpose of coroutine-based programming.&lt;/p&gt;
+&lt;h3&gt;The lifecycle of coroutines&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-lifecycle-of-coroutines&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-lifecycle-of-coroutines&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Because ODY uses an asynchronous, event-driven architecture, it avoids the overhead of traditional PHP-FPM request
+lifecycle, making it ideal for high-performance applications. ODY&amp;rsquo;s coroutines implementation allows for non-blocking
+I/O while maintaining a synchronous-like coding style.&lt;/p&gt;
+&lt;p&gt;In ODY, the request/response lifecycle follows an event-driven, coroutine-based model designed for high-performance
+asynchronous processing. Here&amp;rsquo;s a high-level overview:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Server Initialization&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A Swoole HTTP/TCP/WebSocket server starts and listens for incoming connections.&lt;/li&gt;
+&lt;li&gt;It runs as a long-lived process with worker and event loops.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Handling Incoming Requests&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;When a client sends a request, Swoole’s event loop accepts it without blocking.&lt;/li&gt;
+&lt;li&gt;The request data (headers, body, etc.) is parsed and passed to the registered request handler.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Processing the Request&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Business logic executes inside a worker coroutine.&lt;/li&gt;
+&lt;li&gt;Swoole supports non-blocking I/O (e.g., MySQL, Redis, HTTP requests) via coroutines for high concurrency.&lt;/li&gt;
+&lt;li&gt;Custom middleware, routing, and controllers process the request.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Generating and Sending the Response&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The handler constructs an HTTP response.&lt;/li&gt;
+&lt;li&gt;The response is sent back to the client via Swoole\Http\Response-&amp;gt;end().&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Connection Management&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;After responding, the connection may be closed or kept alive depending on headers (e.g., Connection: keep-alive).&lt;/li&gt;
+&lt;li&gt;Swoole reuses worker processes for handling new requests without restarting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;How Coroutines Work&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;how-coroutines-work&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#how-coroutines-work&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When a coroutine performs an I/O operation (e.g., MySQL query, HTTP request), it yields execution.
+The event loop switches to another coroutine instead of blocking. Once the I/O operation completes, the coroutine
+resumes execution.&lt;/p&gt;
+&lt;p&gt;Example: Coroutine-based MySQL Query&lt;/p&gt;
+&lt;p&gt;Instead of using PDO (which is blocking), Swoole provides Swoole\Coroutine\MySQL:&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;Swoole\Coroutine\run&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$mysql &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Swoole\Coroutine\MySQL&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $mysql&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;connect&lt;/span&gt;([
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;host&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;user&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;root&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;password&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;password&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;database&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;test&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $mysql&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;query&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT * FROM users&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;print_r&lt;/span&gt;($result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;This executes without blocking the entire process.&lt;/p&gt;
+&lt;h3&gt;Middleware Handling in ODY&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;middleware-handling-in-ody&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#middleware-handling-in-ody&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Swoole doesn’t have built-in middleware like traditional frameworks (Laravel, Symfony), but we have developed a kernel
+that registers and executes middleware like we are used to. Middleware gets registered at the application&amp;rsquo;s boot time
+and gets executed at each request. Keep in mind that when using coroutines in middleware the events are non blocking.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Request</title>
+      <link>http://localhost:1313/docs/foundation/request/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/docs/foundation/request/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Response</title>
+      <link>http://localhost:1313/docs/foundation/response/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/docs/foundation/response/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
       <title>Websocket Server</title>
       <link>http://localhost:1313/docs/server/websocket_server/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -261,9 +436,13 @@ credentials in &lt;code&gt;.env&lt;/code&gt; and create a users table. This can 
         
         
         &lt;h2&gt;Introduction&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;introduction&#34;&gt;&lt;/span&gt;
-    &lt;a href=&#34;#introduction&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The current implementation of a websocket server is still in it&amp;rsquo;s early stages.
-Donwload the composer package and edit the config file or add env variables in your .env file.&lt;/p&gt;
-&lt;p&gt;This package requires &lt;code&gt;ext-swoole&lt;/code&gt; to be installed on your system.&lt;/p&gt;
+    &lt;a href=&#34;#introduction&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The WebSocket server implementation is still in its early stages, and new features are being actively developed. To get
+started, install the Composer package and configure the server by editing the config file or setting environment
+variables in your .env file. The configuration process is straightforward, allowing you to customize the WebSocket
+server to suit your application’s needs.&lt;/p&gt;
+&lt;p&gt;This package requires the ext-swoole extension to be installed on your system. Swoole provides high-performance,
+asynchronous networking capabilities, making it ideal for handling real-time WebSocket connections efficiently. Before
+proceeding, ensure that your system meets the necessary requirements for running Swoole and WebSockets.&lt;/p&gt;
 &lt;h2&gt;Installation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;installation&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#installation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
 
@@ -339,8 +518,12 @@ Donwload the composer package and edit the config file or add env variables in y
 &lt;h3&gt;Middleware&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;middleware&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#middleware&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;WIP&lt;/p&gt;
 &lt;h3&gt;Handling regular HTTP requests&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;handling-regular-http-requests&#34;&gt;&lt;/span&gt;
-    &lt;a href=&#34;#handling-regular-http-requests&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;In addition to separating HTTP services and WebSocket services through ports, we can also listen for HTTP requests in
-a WebSocket server. Http requests get send to the &lt;code&gt;Event::onRequest&lt;/code&gt; callback.&lt;/p&gt;
+    &lt;a href=&#34;#handling-regular-http-requests&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;In addition to handling WebSocket connections, the server can also process standard HTTP requests, making it a versatile
+solution for real-time applications. These requests are handled by the &lt;code&gt;Event::onRequest callback&lt;/code&gt;, which allows developers
+to define custom logic for handling incoming HTTP traffic.&lt;/p&gt;
+&lt;p&gt;By leveraging this feature, you can serve both WebSocket and HTTP clients within the same application, reducing the
+need for separate infrastructure. This means that alongside real-time WebSocket communication, the server can manage
+tasks such as API requests, authentication, or even simple web page rendering, all within a single, unified system.&lt;/p&gt;
 &lt;h2&gt;Usage&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;usage&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#usage&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Starting a websocket server&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;starting-a-websocket-server&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#starting-a-websocket-server&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;To run a websocket server run the following command:&lt;/p&gt;
@@ -371,19 +554,21 @@ a WebSocket server. Http requests get send to the &lt;code&gt;Event::onRequest&l
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3&gt;Websocket callbacks&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;websocket-callbacks&#34;&gt;&lt;/span&gt;
-    &lt;a href=&#34;#websocket-callbacks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Out of the box the websocket listens for the following events:&lt;/p&gt;
+    &lt;a href=&#34;#websocket-callbacks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, the WebSocket server listens for the following events:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;onHandshake&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onMessage&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onClose&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onRequest&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onDisconnect&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onOpen&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onHandshake&lt;/code&gt; - Triggered when a new WebSocket connection is being established. This event allows developers to customize the handshake process.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onMessage&lt;/code&gt; - Fires when the server receives a message from a client. This is useful for processing incoming data and responding accordingly.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onClose&lt;/code&gt; - Called when a WebSocket connection is closed. This allows for cleanup and resource management.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onRequest&lt;/code&gt; - Handles incoming HTTP requests within the WebSocket server. This feature enables hybrid HTTP and WebSocket applications.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onDisconnect&lt;/code&gt; - Triggered when a client disconnects from the server, allowing developers to track user sessions effectively.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onOpen&lt;/code&gt; - Fired when a new WebSocket connection is successfully opened, enabling initial communication with the client.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;These are mapped to a basic implementation of a websocket server. They can accept messages, send messages,&amp;hellip;&lt;/p&gt;
-&lt;p&gt;You can override these native callbacks by creating a &lt;code&gt;WebsocketController&lt;/code&gt; and configuring the methods in the &lt;code&gt;callback[]&lt;/code&gt;
-section of the config file.&lt;/p&gt;
-&lt;p&gt;A very basic implementation of a &lt;code&gt;WebsocketController.php&lt;/code&gt; looks like this:&lt;/p&gt;
+&lt;p&gt;These events are mapped to basic WebSocket server implementations. You can override them by creating a WebSocketController
+and defining the methods in the callbacks[] section of the config file. Custom implementations give developers full
+control over WebSocket interactions, making it possible to build dynamic, event-driven applications with real-time
+communication capabilities.&lt;/p&gt;
+&lt;p&gt;(Planned feature; Mapping the &lt;code&gt;onRequest&lt;/code&gt; event to the application&amp;rsquo;s Http kernel)&lt;/p&gt;
+&lt;p&gt;A very basic implementation of a &lt;code&gt;WebsocketController.php&lt;/code&gt;:&lt;/p&gt;
 &lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
 
 &lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;php&lt;/span&gt;

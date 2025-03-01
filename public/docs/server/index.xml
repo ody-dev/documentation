@@ -116,9 +116,13 @@
         
         
         &lt;h2&gt;Introduction&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;introduction&#34;&gt;&lt;/span&gt;
-    &lt;a href=&#34;#introduction&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The current implementation of a websocket server is still in it&amp;rsquo;s early stages.
-Donwload the composer package and edit the config file or add env variables in your .env file.&lt;/p&gt;
-&lt;p&gt;This package requires &lt;code&gt;ext-swoole&lt;/code&gt; to be installed on your system.&lt;/p&gt;
+    &lt;a href=&#34;#introduction&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The WebSocket server implementation is still in its early stages, and new features are being actively developed. To get
+started, install the Composer package and configure the server by editing the config file or setting environment
+variables in your .env file. The configuration process is straightforward, allowing you to customize the WebSocket
+server to suit your application’s needs.&lt;/p&gt;
+&lt;p&gt;This package requires the ext-swoole extension to be installed on your system. Swoole provides high-performance,
+asynchronous networking capabilities, making it ideal for handling real-time WebSocket connections efficiently. Before
+proceeding, ensure that your system meets the necessary requirements for running Swoole and WebSockets.&lt;/p&gt;
 &lt;h2&gt;Installation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;installation&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#installation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
 
@@ -194,8 +198,12 @@ Donwload the composer package and edit the config file or add env variables in y
 &lt;h3&gt;Middleware&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;middleware&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#middleware&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;WIP&lt;/p&gt;
 &lt;h3&gt;Handling regular HTTP requests&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;handling-regular-http-requests&#34;&gt;&lt;/span&gt;
-    &lt;a href=&#34;#handling-regular-http-requests&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;In addition to separating HTTP services and WebSocket services through ports, we can also listen for HTTP requests in
-a WebSocket server. Http requests get send to the &lt;code&gt;Event::onRequest&lt;/code&gt; callback.&lt;/p&gt;
+    &lt;a href=&#34;#handling-regular-http-requests&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;In addition to handling WebSocket connections, the server can also process standard HTTP requests, making it a versatile
+solution for real-time applications. These requests are handled by the &lt;code&gt;Event::onRequest callback&lt;/code&gt;, which allows developers
+to define custom logic for handling incoming HTTP traffic.&lt;/p&gt;
+&lt;p&gt;By leveraging this feature, you can serve both WebSocket and HTTP clients within the same application, reducing the
+need for separate infrastructure. This means that alongside real-time WebSocket communication, the server can manage
+tasks such as API requests, authentication, or even simple web page rendering, all within a single, unified system.&lt;/p&gt;
 &lt;h2&gt;Usage&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;usage&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#usage&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Starting a websocket server&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;starting-a-websocket-server&#34;&gt;&lt;/span&gt;
     &lt;a href=&#34;#starting-a-websocket-server&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;To run a websocket server run the following command:&lt;/p&gt;
@@ -226,19 +234,21 @@ a WebSocket server. Http requests get send to the &lt;code&gt;Event::onRequest&l
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h3&gt;Websocket callbacks&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;websocket-callbacks&#34;&gt;&lt;/span&gt;
-    &lt;a href=&#34;#websocket-callbacks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Out of the box the websocket listens for the following events:&lt;/p&gt;
+    &lt;a href=&#34;#websocket-callbacks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, the WebSocket server listens for the following events:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;onHandshake&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onMessage&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onClose&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onRequest&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onDisconnect&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;onOpen&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onHandshake&lt;/code&gt; - Triggered when a new WebSocket connection is being established. This event allows developers to customize the handshake process.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onMessage&lt;/code&gt; - Fires when the server receives a message from a client. This is useful for processing incoming data and responding accordingly.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onClose&lt;/code&gt; - Called when a WebSocket connection is closed. This allows for cleanup and resource management.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onRequest&lt;/code&gt; - Handles incoming HTTP requests within the WebSocket server. This feature enables hybrid HTTP and WebSocket applications.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onDisconnect&lt;/code&gt; - Triggered when a client disconnects from the server, allowing developers to track user sessions effectively.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;onOpen&lt;/code&gt; - Fired when a new WebSocket connection is successfully opened, enabling initial communication with the client.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;These are mapped to a basic implementation of a websocket server. They can accept messages, send messages,&amp;hellip;&lt;/p&gt;
-&lt;p&gt;You can override these native callbacks by creating a &lt;code&gt;WebsocketController&lt;/code&gt; and configuring the methods in the &lt;code&gt;callback[]&lt;/code&gt;
-section of the config file.&lt;/p&gt;
-&lt;p&gt;A very basic implementation of a &lt;code&gt;WebsocketController.php&lt;/code&gt; looks like this:&lt;/p&gt;
+&lt;p&gt;These events are mapped to basic WebSocket server implementations. You can override them by creating a WebSocketController
+and defining the methods in the callbacks[] section of the config file. Custom implementations give developers full
+control over WebSocket interactions, making it possible to build dynamic, event-driven applications with real-time
+communication capabilities.&lt;/p&gt;
+&lt;p&gt;(Planned feature; Mapping the &lt;code&gt;onRequest&lt;/code&gt; event to the application&amp;rsquo;s Http kernel)&lt;/p&gt;
+&lt;p&gt;A very basic implementation of a &lt;code&gt;WebsocketController.php&lt;/code&gt;:&lt;/p&gt;
 &lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
 
 &lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;php&lt;/span&gt;
