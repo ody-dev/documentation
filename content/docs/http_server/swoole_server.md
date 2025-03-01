@@ -1,3 +1,0 @@
----
-title: Swoole HTTP Server
----
