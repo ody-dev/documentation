@@ -3,12 +3,17 @@ title: Websocket Server
 ---
 
 ## Introduction
-The current implementation of a websocket server is still in it's early stages.
-Donwload the composer package and edit the config file or add env variables in your .env file.
+The WebSocket server implementation is still in its early stages, and new features are being actively developed.
 
-This package requires `ext-swoole` to be installed on your system.
+This package requires the ext-swoole extension to be installed on your system. Swoole provides high-performance, 
+asynchronous networking capabilities, making it ideal for handling real-time WebSocket connections efficiently. Before 
+proceeding, ensure that your system meets the necessary requirements for running Swoole and WebSockets.
 
 ## Installation
+To get started, install the Composer package and configure the server by editing the config file or setting environment 
+variables in your .env file. The configuration process is straightforward, allowing you to customize the WebSocket server 
+to suit your application’s needs.
+
 
 ```shell
 composer install ody/websocket-server
@@ -59,14 +64,6 @@ WEBSOCKET_SECRET_KEY=123123123
 WEBSOCKET_WORKER_COUNT=8
 ```
 
-### Middleware
-WIP
-
-### Handling regular HTTP requests
-
-In addition to separating HTTP services and WebSocket services through ports, we can also listen for HTTP requests in 
-a WebSocket server. Http requests get send to the `Event::onRequest` callback.
-
 ## Usage
 
 ### Starting a websocket server
@@ -85,21 +82,21 @@ php ody sebsocket:stop
 
 ### Websocket callbacks
 
-Out of the box the websocket listens for the following events:
+By default, the WebSocket server listens for the following events:
 
-* `onHandshake`
-* `onMessage`
-* `onClose`
-* `onRequest`
-* `onDisconnect`
-* `onOpen`
+* `onHandshake` - Triggered when a new WebSocket connection is being established. This event allows developers to customize the handshake process.
+* `onMessage` - Fires when the server receives a message from a client. This is useful for processing incoming data and responding accordingly.
+* `onClose` - Called when a WebSocket connection is closed. This allows for cleanup and resource management.
+* `onRequest` - Handles incoming HTTP requests within the WebSocket server. This feature enables hybrid HTTP and WebSocket applications.
+* `onDisconnect` - Triggered when a client disconnects from the server, allowing developers to track user sessions effectively.
+* `onOpen` - Fired when a new WebSocket connection is successfully opened, enabling initial communication with the client.
 
-These are mapped to a basic implementation of a websocket server. They can accept messages, send messages,...
+These events are mapped to basic WebSocket server implementations. You can override them by creating a WebSocketController 
+and defining the methods in the callbacks[] section of the config file. Custom implementations give developers full 
+control over WebSocket interactions, making it possible to build dynamic, event-driven applications with real-time 
+communication capabilities.
 
-You can override these native callbacks by creating a `WebsocketController` and configuring the methods in the `callback[]`
-section of the config file.
-
-A very basic implementation of a `WebsocketController.php` looks like this:
+A very basic implementation of a `WebsocketController.php`:
 ```php
 <?php
 declare(strict_types=1);
@@ -176,6 +173,26 @@ Example:
         $response->end();
     }
 ```
+
+### Middleware
+
+{{< callout type="error" >}}
+Not yet implemented!
+{{< /callout >}}
+
+### Handling regular HTTP requests
+
+In addition to handling WebSocket connections, the server can also process standard HTTP requests, making it a versatile
+solution for real-time applications. These requests are handled by the `Event::onRequest callback`, which allows developers
+to define custom logic for handling incoming HTTP traffic.
+
+By leveraging this feature, you can serve both WebSocket and HTTP clients within the same application, reducing the
+need for separate infrastructure. This means that alongside real-time WebSocket communication, the server can manage
+tasks such as API requests, authentication, or even simple web page rendering, all within a single, unified system.
+
+{{< callout type="info" >}}
+Planned feature; Mapping the `onRequest` event to the application's Http kernel
+{{< /callout >}}
 
 ### Keeping track of connections
 
