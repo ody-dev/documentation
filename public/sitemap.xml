@@ -4,22 +4,26 @@
   <url>
     <loc>http://localhost:1313/docs/installation/</loc>
   </url><url>
+    <loc>http://localhost:1313/docs/core/router/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/core/_middleware/</loc>
+  </url><url>
     <loc>http://localhost:1313/blog/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/server/</loc>
-  </url><url>
-    <loc>http://localhost:1313/docs/websockets/</loc>
-  </url><url>
     <loc>http://localhost:1313/categories/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/core/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/server/http_server/</loc>
   </url><url>
     <loc>http://localhost:1313/docs/</loc>
   </url><url>
     <loc>http://localhost:1313/</loc>
   </url><url>
-    <loc>http://localhost:1313/docs/server/php_server/</loc>
-  </url><url>
-    <loc>http://localhost:1313/docs/server/swoole_server/</loc>
+    <loc>http://localhost:1313/docs/server/</loc>
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
+  </url><url>
+    <loc>http://localhost:1313/docs/server/websocket_server/</loc>
   </url>
 </urlset>

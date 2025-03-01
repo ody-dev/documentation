@@ -43,7 +43,7 @@ return [
     ] ,
 
     /*
-     * Files and folders that must be changed in real time
+     * Files and folders that must be watched in real time
      */
     'watcher' => [
         'App',
