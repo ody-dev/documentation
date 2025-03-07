@@ -8,22 +8,18 @@ ODY's HTTP server is a high-performance, event-driven server that handles HTTP r
 Swoole's server. Unlike traditional PHP applications running on Apache or Nginx with PHP-FPM, Swoole’s HTTP server runs as a 
 standalone process, efficiently managing multiple requests without needing to create a new PHP process for each request.
 
-The HTTP server is ideal for applications requiring high concurrency, low latency, and efficient resource
-utilization. Since it eliminates the overhead of PHP-FPM and traditional request-handling models, it’s well-suited for
-real-time applications, and microservices.
-
 How It Works:
-1. Persistent Process – The server starts as a long-running process, avoiding the overhead of repeatedly loading PHP scripts.
+1. The server starts as a long-running process, avoiding the overhead of repeatedly loading PHP scripts.
 2. Event-Driven Handling – Requests are processed asynchronously using an event loop, allowing the server to handle thousands of connections concurrently.
 3. Non-Blocking I/O – The server can process multiple requests without waiting for I/O operations (e.g., database queries, file reads) to complete.
 4. Worker Processes – The server can spawn multiple worker processes to distribute requests across CPU cores for better performance.
-5. Custom Request Handling – Developers can define request handlers, set custom headers, and control responses directly within the server logic.
+5. Developers can define custom request handlers, set custom headers, and control responses directly within the server logic.
 
 ## Installation
 This package requires `ext-swoole` to be installed on your system.
 
 ```shell
-composer install ody/http-server
+composer install ody/server
 ```
 
 ### Configuration

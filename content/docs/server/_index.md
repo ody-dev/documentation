@@ -1,3 +1,4 @@
 ---
-title: Servers
+title: Server
+weight: 4
 ---

@@ -1,5 +1,6 @@
 ---
 title: Lifecycle
+weight: 2
 ---
 ODY has two modes of operation; It can be run as a regular PHP application like we are used to, or it can run on a 
 coroutine based server developed on top of Swoole. To understand the lifecycle of a coroutine based application a good 
@@ -9,26 +10,37 @@ Both modes share the same application core components. (see section foundation) 
 things as clear and familiar as possible to make development as easy as possible if you are already accustomed to 
 frameworks like Laravel and Symfony.
 
-## Coroutines
+[//]: # (## Coroutines)
 
-### What are coroutines?
+[//]: # (### What are coroutines?)
 
-Coroutines effectively solve the challenge of asynchronous non-blocking systems, but what exactly are they?
+[//]: # ()
+[//]: # (Coroutines effectively solve the challenge of asynchronous non-blocking systems, but what exactly are they?)
 
-By definition, coroutines are lightweight threads managed by user code rather than the OS kernel, meaning the user 
-controls execution switches instead of the OS allocating CPU time. In Swoole, each Worker process has a coroutine 
-scheduler that switches execution when an I/O operation occurs or when explicitly triggered. Since a process runs 
-coroutines one at a time, there’s no need for synchronization locks like in multi-threaded programming.
+[//]: # ()
+[//]: # (By definition, coroutines are lightweight threads managed by user code rather than the OS kernel, meaning the user )
 
-Within a coroutine, execution remains sequential. In an HTTP coroutine server, each request runs in its own coroutine. 
-For example, if coroutine A handles request A and coroutine B handles request B, execution switches when coroutine A 
-encounters an I/O operation (e.g., a MySQL query). While coroutine A waits for the database response, coroutine B 
-executes. Once the I/O completes, execution returns to coroutine A, ensuring non-blocking execution.
+[//]: # (controls execution switches instead of the OS allocating CPU time. In Swoole, each Worker process has a coroutine )
 
-However, to enable coroutine switching, operations like MySQL queries must be asynchronous and non-blocking—otherwise, 
-the scheduler cannot switch coroutines, causing blocking, which defeats the purpose of coroutine-based programming.
+[//]: # (scheduler that switches execution when an I/O operation occurs or when explicitly triggered. Since a process runs )
 
-### The lifecycle of coroutines
+[//]: # (coroutines one at a time, there’s no need for synchronization locks like in multi-threaded programming.)
+
+[//]: # ()
+[//]: # (Within a coroutine, execution remains sequential. In an HTTP coroutine server, each request runs in its own coroutine. )
+
+[//]: # (For example, if coroutine A handles request A and coroutine B handles request B, execution switches when coroutine A )
+
+[//]: # (encounters an I/O operation &#40;e.g., a MySQL query&#41;. While coroutine A waits for the database response, coroutine B )
+
+[//]: # (executes. Once the I/O completes, execution returns to coroutine A, ensuring non-blocking execution.)
+
+[//]: # ()
+[//]: # (However, to enable coroutine switching, operations like MySQL queries must be asynchronous and non-blocking—otherwise, )
+
+[//]: # (the scheduler cannot switch coroutines, causing blocking, which defeats the purpose of coroutine-based programming.)
+
+### The request lifecycle of ODY
 
 Because ODY uses an asynchronous, event-driven architecture, it avoids the overhead of traditional PHP-FPM request 
 lifecycle, making it ideal for high-performance applications. ODY's coroutines implementation allows for non-blocking 
