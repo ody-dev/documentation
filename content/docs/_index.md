@@ -1,5 +1,5 @@
 ---
-title: My Docs
+title: Documentation
 cascade:
   type: docs
 ---

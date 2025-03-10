@@ -5,15 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2b3ed44-efff-4311-a056-ab3016abda62" name="Changes" comment="update documentation">
-      <change afterPath="$PROJECT_DIR$/content/docs/pico/getting_started.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/process/_index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/tasks.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/Blog/process_vs_task.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/foundation/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/_index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/funcional_declarative/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/pico/_index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/funcional_declarative/introduction.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/funcional_declarative/route.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/pico/route.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/funcional_declarative/swoole.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/pico/swoole.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/_index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/process/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/process/_index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/tasks.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/tasks.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +78,7 @@
       <workItem from="1741359092267" duration="4781000" />
       <workItem from="1741597259761" duration="5000" />
       <workItem from="1741622035807" duration="83000" />
-      <workItem from="1741622126671" duration="1194000" />
+      <workItem from="1741622126671" duration="4126000" />
     </task>
     <task id="LOCAL-00001" summary="Update websocket docs">
       <option name="closed" value="true" />
@@ -100,7 +96,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741363650730</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="update documentation">
+      <option name="closed" value="true" />
+      <created>1741623357205</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1741623357205</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

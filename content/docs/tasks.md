@@ -5,11 +5,10 @@ weight: 5
 
 WIP, not ready yet!
 
-ODY provides a powerful asynchronous task system powered by Swoole, allowing you to offload time-consuming operations 
-without blocking the main execution flow. Tasks run in dedicated worker processes, ensuring smooth performance for 
-real-time applications.
+ODY provides an asynchronous task system, allowing you to offload time-consuming operations without blocking 
+the main execution flow. Tasks run in dedicated worker processes
 
-You can dispatch tasks effortlessly using the `Task::execute()` method, passing in a reference to the class that should 
+You can dispatch tasks using the `Task::execute()` method, passing in a reference to the class that should 
 handle the task:
 
 ```php
