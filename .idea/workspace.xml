@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2b3ed44-efff-4311-a056-ab3016abda62" name="Changes" comment="update documentation">
-      <change afterPath="$PROJECT_DIR$/content/Blog/process_vs_task.md" afterDir="false" />
+    <list default="true" id="f2b3ed44-efff-4311-a056-ab3016abda62" name="Changes" comment="update task docs">
+      <change afterPath="$PROJECT_DIR$/content/docs/additional/_index.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/docs/additional/influxdb.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/docs/foundation/logging.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/docs/foundation/service_provider.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/_index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/process/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/process/_index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/docs/tasks.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/tasks.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/_index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/_middleware.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/_middleware.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/router.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/router.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +61,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-WS-243.24978.60" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.25659.40" />
       </set>
     </attachedChunks>
   </component>
@@ -79,6 +82,7 @@
       <workItem from="1741597259761" duration="5000" />
       <workItem from="1741622035807" duration="83000" />
       <workItem from="1741622126671" duration="4126000" />
+      <workItem from="1742031369098" duration="911000" />
     </task>
     <task id="LOCAL-00001" summary="Update websocket docs">
       <option name="closed" value="true" />
@@ -104,7 +108,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741623357205</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update task docs">
+      <option name="closed" value="true" />
+      <created>1741646704917</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1741646704917</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -113,6 +125,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Update websocket docs" />
     <MESSAGE value="update documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="update documentation" />
+    <MESSAGE value="update task docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="update task docs" />
   </component>
 </project>
