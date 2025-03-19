@@ -2,101 +2,199 @@
 title: Lifecycle
 weight: 2
 ---
-ODY has two modes of operation; It can be run as a regular PHP application like we are used to, or it can run on a 
-coroutine based server developed on top of Swoole. To understand the lifecycle of a coroutine based application a good 
-understanding of Swoole is required.
 
-Both modes share the same application core components. (see section foundation) While developing ODY we stived to keep 
-things as clear and familiar as possible to make development as easy as possible if you are already accustomed to 
-frameworks like Laravel and Symfony.
+The ODY framework is built around Swoole's coroutine-based architecture, providing high-performance API capabilities. 
+Understanding the lifecycle of requests within this framework is essential for effectively developing and scaling your 
+applications.
 
-[//]: # (## Coroutines)
+## Request Lifecycle Overview
 
-[//]: # (### What are coroutines?)
+When working with the ODY framework, a request flows through several distinct phases:
 
-[//]: # ()
-[//]: # (Coroutines effectively solve the challenge of asynchronous non-blocking systems, but what exactly are they?)
+1. **Server Initialization**
+2. **Request Reception**
+3. **Request Processing**
+4. **Response Generation**
+5. **Resource Cleanup**
 
-[//]: # ()
-[//]: # (By definition, coroutines are lightweight threads managed by user code rather than the OS kernel, meaning the user )
+Let's explore each of these phases in detail.
 
-[//]: # (controls execution switches instead of the OS allocating CPU time. In Swoole, each Worker process has a coroutine )
+### Server Initialization
 
-[//]: # (scheduler that switches execution when an I/O operation occurs or when explicitly triggered. Since a process runs )
+Unlike traditional PHP applications that initialize the environment for each request, the ODY framework leverages Swoole 
+to maintain a persistent application state:
 
-[//]: # (coroutines one at a time, there’s no need for synchronization locks like in multi-threaded programming.)
-
-[//]: # ()
-[//]: # (Within a coroutine, execution remains sequential. In an HTTP coroutine server, each request runs in its own coroutine. )
-
-[//]: # (For example, if coroutine A handles request A and coroutine B handles request B, execution switches when coroutine A )
-
-[//]: # (encounters an I/O operation &#40;e.g., a MySQL query&#41;. While coroutine A waits for the database response, coroutine B )
-
-[//]: # (executes. Once the I/O completes, execution returns to coroutine A, ensuring non-blocking execution.)
-
-[//]: # ()
-[//]: # (However, to enable coroutine switching, operations like MySQL queries must be asynchronous and non-blocking—otherwise, )
-
-[//]: # (the scheduler cannot switch coroutines, causing blocking, which defeats the purpose of coroutine-based programming.)
-
-### The request lifecycle of ODY
-
-Because ODY uses an asynchronous, event-driven architecture, it avoids the overhead of traditional PHP-FPM request 
-lifecycle, making it ideal for high-performance applications. ODY's coroutines implementation allows for non-blocking 
-I/O while maintaining a synchronous-like coding style.
-
-In ODY, the request/response lifecycle follows an event-driven, coroutine-based model designed for high-performance 
-asynchronous processing. Here's a high-level overview:
-
-1. Server Initialization 
-   * A Swoole HTTP/TCP/WebSocket server starts and listens for incoming connections. 
-   * It runs as a long-lived process with worker and event loops.
-
-2. Handling Incoming Requests
-    * When a client sends a request, Swoole’s event loop accepts it without blocking.
-    * The request data (headers, body, etc.) is parsed and passed to the registered request handler.
-
-3. Processing the Request
-    * Business logic executes inside a worker coroutine.
-    * Swoole supports non-blocking I/O (e.g., MySQL, Redis, HTTP requests) via coroutines for high concurrency.
-    * Custom middleware, routing, and controllers process the request.
-
-4. Generating and Sending the Response
-    * The handler constructs an HTTP response.
-    * The response is sent back to the client via Swoole\Http\Response->end().
-
-5. Connection Management
-    * After responding, the connection may be closed or kept alive depending on headers (e.g., Connection: keep-alive).
-    * Swoole reuses worker processes for handling new requests without restarting.
-
-### How Coroutines Work
-
-When a coroutine performs an I/O operation (e.g., MySQL query, HTTP request), it yields execution.
-The event loop switches to another coroutine instead of blocking. Once the I/O operation completes, the coroutine 
-resumes execution.
-
-Example: Coroutine-based MySQL Query
-
-Instead of using PDO (which is blocking), Swoole provides Swoole\Coroutine\MySQL:
 ```php
-Swoole\Coroutine\run(function() {
-$mysql = new Swoole\Coroutine\MySQL();
-    $mysql->connect([
-        'host' => '127.0.0.1',
-        'user' => 'root',
-        'password' => 'password',
-        'database' => 'test'
-    ]);
+// Typically in your application's entry point
+use Ody\Foundation\Bootstrap;
+use Ody\Foundation\HttpServer;
+use Ody\Server\ServerManager;
+use Ody\Server\ServerType;
 
-    $result = $mysql->query("SELECT * FROM users");
-    print_r($result);
-});
+// Initialize the application once
+$app = Bootstrap::init();
+$app->bootstrap();
+
+// Start the HTTP server
+HttpServer::start(
+    ServerManager::init(ServerType::HTTP_SERVER)
+        ->createServer($config)
+        ->setServerConfig($config['additional'])
+        ->registerCallbacks($config['callbacks'])
+        ->getServerInstance()
+);
 ```
-This executes without blocking the entire process.
 
-### Middleware Handling in ODY
+During this phase:
+- The framework bootstraps the application once
+- Service providers are registered and booted
+- Routes are registered (but not processed yet)
+- The HTTP server starts and listens for incoming connections
 
-Swoole doesn’t have built-in middleware like traditional frameworks (Laravel, Symfony), but we have developed a kernel 
-that registers and executes middleware like we are used to. Middleware gets registered at the application's boot time 
-and gets executed at each request. Keep in mind that when using coroutines in middleware the events are non blocking.
+This is a key difference from traditional PHP applications - your application code remains resident in memory, ready to 
+handle multiple requests without restarting.
+
+### Request Reception
+
+When a client sends a request to your application:
+
+1. Swoole's event loop receives the connection
+2. A new coroutine is created for each request via `Coroutine::create()`
+3. The `onRequest` handler in `HttpServer` is triggered
+
+```php
+// From src/HttpServer.php
+public static function onRequest(SwRequest $request, SwResponse $response): void
+{
+    Coroutine::create(function() use ($request, $response) {
+        static::setContext($request);
+        
+        $callback = new RequestCallback(static::$app);
+        $callback->handle($request, $response);
+    });
+}
+```
+
+This coroutine-based approach allows your application to handle thousands of concurrent connections efficiently, unlike 
+traditional PHP which typically handles one request at a time.
+
+### Request Processing
+
+Once a request is received, it undergoes several processing steps:
+
+1. **Context Initialization**: The request data is stored in the coroutine context using `ContextManager::set()`, making it accessible throughout the request lifecycle
+2. **Request Conversion**: Swoole's HTTP request is converted to a PSR-7 compatible request
+3. **Routing**: The router matches the request to a registered route
+4. **Middleware Pipeline**: The request passes through a series of middleware
+5. **Controller/Handler Execution**: The matched route handler (often a controller method) is executed
+
+```php
+// This is what happens inside RequestCallback::handle()
+// Convert Swoole request to PSR-7
+$serverRequest = $this->createServerRequest($request);
+
+// Log the request start with request ID
+logger()->debug("Processing request", [
+    'request_id' => $requestId,
+    'method' => $serverRequest->getMethod(),
+    'path' => $serverRequest->getUri()->getPath()
+]);
+
+// Handle the request with middleware and routing
+$psrResponse = $this->handler->handle($serverRequest);
+```
+
+The middleware pipeline is a crucial part of the framework, allowing operations like:
+- Authentication and authorization
+- CORS handling
+- Request logging
+- Body parsing (JSON, form data)
+- Rate limiting
+
+Each middleware can either pass the request to the next middleware in the chain or return a response directly.
+
+### Response Generation
+
+After the route handler processes the request, a response is generated:
+
+1. The controller returns a PSR-7 compatible `ResponseInterface`
+2. Middleware can modify the response on the way back through the pipeline
+3. The PSR-7 response is converted to a Swoole HTTP response
+4. The response is sent to the client
+
+```php
+// Inside RequestCallback::handle()
+$psrResponse = $this->handler->handle($serverRequest);
+
+// Convert PSR-7 response to Swoole response
+$this->emit($psrResponse, $response);
+```
+
+This conversion process ensures compatibility with PSR-7 standards while leveraging Swoole's performance.
+
+### Resource Cleanup
+
+After the response is sent, the framework performs cleanup operations:
+
+1. **Terminating Middleware**: Middleware implementing `TerminatingMiddlewareInterface` will execute `terminate()` methods
+2. **Context Cleanup**: The coroutine context is cleared to prevent memory leaks
+3. **Resource Release**: Any resources (like streams or connections) associated with the request are released
+
+```php
+// From MiddlewareManager::terminate()
+public function terminate(ServerRequestInterface $request, ResponseInterface $response): void
+{
+    // Get middleware stack
+    $stack = $this->getMiddlewareForRoute($method, $path, $controller, $action);
+    
+    // Process all middleware for termination
+    foreach ($stack as $middleware) {
+        // Check if it implements TerminatingMiddlewareInterface
+        if ($instance instanceof TerminatingMiddlewareInterface) {
+            $instance->terminate($request, $response);
+        }
+    }
+    
+    // Clear all data from the context manager
+    ContextManager::clear();
+}
+```
+
+This cleanup is important for maintaining application stability across many requests.
+
+## Coroutines and Concurrency
+
+A key aspect of the ODY framework is its use of Swoole's coroutines for handling concurrent requests. This differs from 
+traditional PHP request handling:
+
+**Traditional PHP**:
+- One process/thread per request
+- Application bootstraps for each request
+- Limited concurrency based on server configuration
+
+**ODY with Swoole**:
+- One process can handle many requests via coroutines
+- Application bootstraps once and stays resident
+- High concurrency with minimal resource usage
+
+Each request gets its own coroutine, allowing the framework to efficiently handle I/O operations without blocking. For example, when a database query is executing, the coroutine can be suspended, allowing other coroutines to run.
+
+## Key Considerations for Developers
+
+When developing applications with the ODY framework, keep these points in mind:
+
+1. **State Management**: Since the application persists between requests, be careful with static variables that might leak state
+2. **Coroutine Safety**: Use the `ContextManager` for request-specific data rather than global variables
+3. **Resource Management**: Always clean up resources (connections, files) when done to prevent memory leaks
+4. **Non-blocking I/O**: Leverage coroutine-compatible libraries for I/O operations to maintain concurrency benefits
+
+## Best Practices
+
+- Use dependency injection instead of static methods where possible
+- Implement terminating middleware for operations that should happen after the response is sent
+- Leverage the Context Manager for request-specific data
+- Optimize route registration to improve performance
+- Use middleware strategically to keep controllers focused on business logic
+
+Understanding this lifecycle will help you build efficient, reliable applications with the ODY framework and take full 
+advantage of Swoole's coroutine-based architecture.

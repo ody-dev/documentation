@@ -4,15 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2b3ed44-efff-4311-a056-ab3016abda62" name="Changes" comment="update task docs">
-      <change afterPath="$PROJECT_DIR$/content/docs/additional/_index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/additional/influxdb.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/foundation/logging.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/foundation/service_provider.md" afterDir="false" />
+    <list default="true" id="f2b3ed44-efff-4311-a056-ab3016abda62" name="Changes" comment="Add blog post">
+      <change afterPath="$PROJECT_DIR$/content/docs/authentication.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/docs/introduction.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/Blog/admin_process_swoole.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/Installation.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/Installation.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/pico/_index.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/pico/getting_started.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/pico/route.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/pico/swoole.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/content/docs/foundation/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/_index.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/content/docs/foundation/_middleware.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/_middleware.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/cache.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/command.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/exception_handler.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/exception_handler.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/request.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/request.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/response.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/response.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/content/docs/foundation/router.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/router.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/foundation/service_provider.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/foundation/service_provider.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/lifecycle.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/lifecycle.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +65,7 @@
       <recent name="$PROJECT_DIR$/content/docs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/content/docs/additional" />
       <recent name="$PROJECT_DIR$/content/docs" />
       <recent name="$PROJECT_DIR$/content/docs/http_server" />
     </key>
@@ -82,7 +94,10 @@
       <workItem from="1741597259761" duration="5000" />
       <workItem from="1741622035807" duration="83000" />
       <workItem from="1741622126671" duration="4126000" />
-      <workItem from="1742031369098" duration="911000" />
+      <workItem from="1742031369098" duration="1323000" />
+      <workItem from="1742036179830" duration="20000" />
+      <workItem from="1742122777865" duration="1083000" />
+      <workItem from="1742414287222" duration="3866000" />
     </task>
     <task id="LOCAL-00001" summary="Update websocket docs">
       <option name="closed" value="true" />
@@ -116,7 +131,23 @@
       <option name="project" value="LOCAL" />
       <updated>1741646704917</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="update docs">
+      <option name="closed" value="true" />
+      <created>1742032428684</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1742032428684</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Add blog post">
+      <option name="closed" value="true" />
+      <created>1742123250152</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742123250152</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -126,6 +157,8 @@
     <MESSAGE value="Update websocket docs" />
     <MESSAGE value="update documentation" />
     <MESSAGE value="update task docs" />
-    <option name="LAST_COMMIT_MESSAGE" value="update task docs" />
+    <MESSAGE value="update docs" />
+    <MESSAGE value="Add blog post" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add blog post" />
   </component>
 </project>
