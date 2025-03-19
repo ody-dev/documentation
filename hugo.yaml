@@ -1,6 +1,6 @@
-baseURL: https://example.org/
+baseURL: https://ody.org
 languageCode: en-us
-title: ODY Docs
+title: ODY Framework
 
 module:
   imports:
