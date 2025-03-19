@@ -5,7 +5,7 @@ weight: 5
 
 ## Introduction
 Efficient task scheduling is essential for automating recurring processes such as database maintenance, email 
-notifications, and background jobs. The PHP Scheduler for [Your Framework] provides a flexible and intuitive way to 
+notifications, and background jobs. The PHP Scheduler for ODY provides a flexible and intuitive way to 
 define and manage scheduled tasks without relying on external cron jobs.
 
 ## Installation
