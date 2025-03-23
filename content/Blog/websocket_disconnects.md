@@ -1,6 +1,6 @@
 ---
 title: Resolving Unstable WebSocket Connections in Swoole Multi-Worker Environments
-date: 2025-03-22
+date: 2025-03-20
 authors:
   - name: Ilyas Deckers
     link: https://github.com/ilyasdeckers
@@ -11,8 +11,6 @@ tags:
   - WebSockets
 excludeSearch: true
 ---
-
-## Problem
 
 When running a Swoole WebSocket server with multiple worker processes, connections may randomly disconnect or appear 
 disconnected when attempting to broadcast messages. This occurs despite clients maintaining active connections.
