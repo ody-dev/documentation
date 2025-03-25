@@ -1,8 +1,10 @@
 ---
 title: Doctrine ORM
 ---
+In the ody/framework GitHub repository a doctrine branch exists fully configured to work with doctrine!
 
 ## Installation
+
 
 1. Install via Composer:
 

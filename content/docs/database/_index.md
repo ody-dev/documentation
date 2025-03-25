@@ -3,8 +3,6 @@ title: Database
 weight: 5
 ---
 
-A high-performance database integration for ODY leveraging Swoole's coroutines.
-
 ## Overview
 
 The ODY Database module provides a connection pool implementation that works with popular PHP ORM solutions. It's
