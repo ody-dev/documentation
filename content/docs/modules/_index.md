@@ -1,5 +1,5 @@
 ---
-title: Additional
+title: Modules
 ---
 
 Additional modules for extending ODY framework.

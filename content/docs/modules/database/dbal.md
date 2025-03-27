@@ -307,16 +307,6 @@ If you suspect connection leaks:
 2. Check that transactions are properly committed or rolled back
 3. Monitor the number of active connections with `SHOW PROCESSLIST` in MySQL
 
-## Comparison with Other ORMs
-
-While Eloquent provides a more developer-friendly API with its ActiveRecord pattern, DBAL offers:
-
-- **Better Raw Performance**: Up to 2x faster than Eloquent in benchmarks
-- **Lower Memory Usage**: Requires less memory for the same operations
-- **More Control**: Direct access to database features and optimizations
-- **Schema Flexibility**: Powerful schema manipulation capabilities
-
 ## License
 
-This package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).s
-open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

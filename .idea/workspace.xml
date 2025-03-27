@@ -5,11 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2b3ed44-efff-4311-a056-ab3016abda62" name="Changes" comment="update docs">
-      <change afterPath="$PROJECT_DIR$/content/docs/database/_index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/database/dbal.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/database/doctrine.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/content/docs/database/eloquent.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/docs/modules/amqp.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/content/docs/modules/database/eloquent.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/Installation.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/Installation.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/_index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/futures.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/additional/influxdb.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/influxdb.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/authentication.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/authentication.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/database/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/database/_index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/database/connection_pool.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/database/connection_pool.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/database/dbal.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/database/dbal.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/database/doctrine.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/database/doctrine.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/database/eloquent.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/http_server.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/http_server.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/process/_index.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/process.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/scheduler.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/scheduler.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/tasks.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/tasks.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/docs/websocket_server.md" beforeDir="false" afterPath="$PROJECT_DIR$/content/docs/modules/websocket_server.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +64,7 @@
       <recent name="$PROJECT_DIR$/content/docs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/content/docs/modules" />
       <recent name="$PROJECT_DIR$/content/docs" />
       <recent name="$PROJECT_DIR$/content/docs/additional" />
       <recent name="$PROJECT_DIR$/content/docs/http_server" />
@@ -87,7 +101,8 @@
       <workItem from="1742595587728" duration="943000" />
       <workItem from="1742596575332" duration="2131000" />
       <workItem from="1742763564559" duration="2885000" />
-      <workItem from="1742933325655" duration="885000" />
+      <workItem from="1742933325655" duration="3189000" />
+      <workItem from="1743108849903" duration="3126000" />
     </task>
     <task id="LOCAL-00001" summary="Update websocket docs">
       <option name="closed" value="true" />
@@ -201,7 +216,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742766304498</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="update docs">
+      <option name="closed" value="true" />
+      <created>1742934542289</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1742934542289</updated>
+    </task>
+    <task id="LOCAL-00016" summary="update docs">
+      <option name="closed" value="true" />
+      <created>1742936260716</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1742936260716</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -5,14 +5,15 @@ In the ody/framework GitHub repository a doctrine branch exists fully configured
 
 ## Installation
 
-
-1. Install via Composer:
+### Install via Composer:
 
 ```bash
 composer require ody/database doctrine/orm doctrine/dbal symfony/cache
 ```
 
-2. Register the required service providers in your `config/app.php`:
+### Register Service Providers
+
+Register the required service providers in your `config/app.php`:
 
 ```php
 'providers' => [
@@ -25,14 +26,80 @@ composer require ody/database doctrine/orm doctrine/dbal symfony/cache
 ],
 ```
 
-3. Publish the configuration files:
-
+### Configuration 
 ```bash
-php ody vendor:publish --tag=ody/database
-php ody vendor:publish --tag=ody/doctrine
+php ody publish ody/database
+php ody publish ody/doctrine
 ```
 
-4. Configure your database connection in `config/database.php` and Doctrine settings in `config/doctrine.php`.
+Configue your database connection in `config/database.php` and Doctrine settings in `config/doctrine.php`.
+
+`database.php`
+```php
+return [
+    'charset' => 'utf8mb4',
+    'enable_connection_pool' => env('DB_ENABLE_POOL', false),
+    'environments' => [
+        'local' => [
+            'adapter' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', 3306),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'root'),
+            'db_name' => env('DB_DATABASE', 'ody'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_general_ci',
+            'prefix'    => '',
+            'pool_size' => env('DB_POOL_SIZE', 64),
+            'options' => [],
+        ],
+        'production' => [
+            'adapter' => 'mysql',
+            'host' => 'production_host',
+            'port' => 3306,
+            'username' => 'user',
+            'password' => 'pass',
+            'db_name' => 'my_production_db',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_general_ci',
+        ],
+    ],
+    'default_environment' => 'local',
+    'log_table_name' => 'migrations_log',
+    'migration_dirs' => [
+        'migrations' => 'database/migrations',
+    ],
+];
+```
+
+`doctrine.php`
+```php
+return [
+    'entity_paths' => [
+        app_path('Entities'),
+    ],
+    'proxy_dir' => storage_path('proxies'),
+    'naming_strategy' => \Doctrine\ORM\Mapping\UnderscoreNamingStrategy::class,
+    'cache' => [
+        // Cache type: array, file, redis
+        'type' => env('DOCTRINE_CACHE_TYPE', 'array'),
+
+        // TTL for file and redis cache (in seconds)
+        'ttl' => env('DOCTRINE_CACHE_TTL', 3600),
+
+        // Directory for file cache
+        'directory' => storage_path('cache/doctrine'),
+    ],
+    'types' => [
+        'json' => \Ody\DB\Doctrine\Types\JsonType::class,
+    ],
+    'enable_events' => env('DOCTRINE_ENABLE_EVENTS', true),
+    'event_subscribers' => [
+        // Add your custom event subscribers here
+        // Example: App\Doctrine\Events\CustomSubscriber::class,
+    ],
+];
+```
 
 ## Basic Usage
 
