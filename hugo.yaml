@@ -27,3 +27,8 @@ menu:
       params:
         icon: github
 
+services:
+  googleAnalytics:
+    ID: G-19M1LW1JKD
+
+
