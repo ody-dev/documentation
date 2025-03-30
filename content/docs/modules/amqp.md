@@ -82,80 +82,8 @@ return [
 ];
 ```
 
-## Setting Up Docker
-
-For local development, you can use Docker to run RabbitMQ:
-
-```bash
-docker run -d --name rabbitmq \
-  -p 5672:5672 \
-  -p 15672:15672 \
-  -e RABBITMQ_DEFAULT_USER=admin \
-  -e RABBITMQ_DEFAULT_PASS=password \
-  rabbitmq:3-management
-```
-
-Or use docker-compose:
-
-```yaml
-version: '3.8'
-
-services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"   # AMQP protocol port
-      - "15672:15672" # Management UI port
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=password
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-      - rabbitmq_log:/var/log/rabbitmq
-
-volumes:
-  rabbitmq_data:
-  rabbitmq_log:
-```
-
-## Connection Pooling
-
-The framework implements connection pooling to optimize RabbitMQ connections by reusing existing connections and
-channels instead of creating new ones for each operation. This significantly improves performance in high-throughput
-scenarios.
-
-### Pool Configuration
-
-Configure the connection pool in your `config/amqp.php` file:
-
-```php
-'pool' => [
-    'enable' => true,                   // Enable/disable connection pooling
-    'max_connections' => 20,            // Maximum connections in the pool
-    'max_channels_per_connection' => 20,// Maximum channels per connection
-    'max_idle_time' => 60,              // Maximum idle time in seconds
-],
-```
-
-### Usage
-
-Connection pooling works transparently with the existing AMQP API:
-
-```php
-// The publish method automatically uses pooled connections
-AMQP::publish(UserCreatedProducer::class, [
-    $user->id,
-    $user->email,
-    $user->username
-]);
-
-// For advanced usage, you can directly access pooled resources
-$connection = AMQP::getPooledConnection();
-$channel = AMQP::getPooledChannel();
-```
-
-## Creating Producers
+## Usage
+### Creating Producers
 
 Producers send messages to RabbitMQ. Create a producer class in your `app/Producers` directory:
 
@@ -185,7 +113,7 @@ class UserCreatedProducer extends ProducerMessage
 }
 ```
 
-## Creating Consumers
+### Creating Consumers
 
 Consumers receive and process messages from RabbitMQ. Create a consumer class in your `app/Consumers` directory:
 
@@ -234,13 +162,17 @@ class WelcomeEmailConsumer extends ConsumerMessage
 }
 ```
 
-## Publishing Messages
+### Publishing Messages
 
 To publish messages in your application code:
 
 ```php
-use Ody\AMQP\AMQP;
+use Ody\AMQP\AMQPClient;
 use App\Producers\UserCreatedProducer;
+
+public function __construct(
+    private readonly AMQPClient          $amqpClient,
+) {}
 
 // In your controller or service
 public function registerUser(array $userData)
@@ -249,7 +181,7 @@ public function registerUser(array $userData)
     $user = $this->userRepository->create($userData);
     
     // Publish event
-    AMQP::publish(UserCreatedProducer::class, [
+    $this->amqpClient->publish(UserCreatedProducer::class, [
         $user->id,              // userId
         $user->email,           // email
         $user->username         // username
@@ -259,19 +191,19 @@ public function registerUser(array $userData)
 }
 ```
 
-## Delayed Messages
+### Delayed Messages
 
 You can publish messages with a delay:
 
 ```php
 // Send a reminder after 24 hours
-AMQP::publishDelayed(ReminderProducer::class, [
+$this->amqpClient->publishDelayed(ReminderProducer::class, [
     $user->id,
     'Your trial is about to expire'
 ], 86400000); // 24 hours in milliseconds
 ```
 
-## Working with Topic Exchanges
+### Working with Topic Exchanges
 
 Topic exchanges provide flexible routing:
 
@@ -290,7 +222,7 @@ class UserNotificationProducer extends ProducerMessage { /* ... */ }
 class EmailNotificationConsumer extends ConsumerMessage { /* ... */ }
 ```
 
-## Message Results
+### Message Results
 
 Consumers should return one of these results:
 
@@ -315,6 +247,42 @@ public function consumeMessage(array $data, AMQPMessage $message): Result
         return Result::DROP;  // Don't retry
     }
 }
+```
+
+## Connection Pooling
+
+The framework implements connection pooling to optimize RabbitMQ connections by reusing existing connections and
+channels instead of creating new ones for each operation. This significantly improves performance in high-throughput
+scenarios.
+
+### Pool Configuration
+
+Configure the connection pool in your `config/amqp.php` file:
+
+```php
+'pool' => [
+    'enable' => true,                   // Enable/disable connection pooling
+    'max_connections' => 20,            // Maximum connections in the pool
+    'max_channels_per_connection' => 20,// Maximum channels per connection
+    'max_idle_time' => 60,              // Maximum idle time in seconds
+],
+```
+
+### Usage
+
+Connection pooling works transparently with the existing AMQP API:
+
+```php
+// The publish method automatically uses pooled connections
+$this->amqpClient->publish(UserCreatedProducer::class, [
+    $user->id,
+    $user->email,
+    $user->username
+]);
+
+// For advanced usage, you can directly access pooled resources
+$connection = $this->amqpClient->getPooledConnection();
+$channel = $this->amqpClient->getPooledChannel();
 ```
 
 ## Monitoring and Management
