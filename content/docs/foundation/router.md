@@ -3,11 +3,6 @@ title: Routing
 weight: 5
 ---
 
-## Overview
-
-This API framework uses a powerful routing system built on FastRoute to handle incoming HTTP requests and direct them 
-to the appropriate handlers.
-
 ## Basic Route Definition
 
 Routes are defined in `routes/*.php` files, with the main application routes typically located in `routes/api.php`. 
