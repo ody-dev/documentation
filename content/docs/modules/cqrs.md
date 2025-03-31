@@ -20,28 +20,46 @@ composer require ody/cqrs
 
 ## Introduction
 
-Command Query Responsibility Segregation is an architectural pattern that separates read operations (Queries) from write 
-operations (Commands). This separation allows for specialized optimization of each path, increased scalability, and 
-better maintainability of your codebase.
+Command Query Responsibility Segregation is an architectural pattern that separates read operations (Queries) from write operations (Commands). This separation allows for specialized optimization of each path, increased scalability, and better maintainability of your codebase.
+
+```mermaid
+graph LR
+    subgraph "CQRS Architecture"
+        W[Client Write]-->|Commands|CB[Command Bus]
+        CB-->|Process|CH[Command Handlers]
+        CH-->|Modify|DB[(Database)]
+        CH-->|Emit|EB[Event Bus]
+        EB-->|Notify|EH[Event Handlers]
+        
+        R[Client Read]-->|Queries|QB[Query Bus]
+        QB-->|Fetch|QH[Query Handlers]
+        QH-->|Read|DB
+    end
+    
+    style W fill:#f9f,stroke:#333,stroke-width:2px
+    style R fill:#bbf,stroke:#333,stroke-width:2px
+    style CB fill:#afa,stroke:#333,stroke-width:2px
+    style QB fill:#aff,stroke:#333,stroke-width:2px
+    style EB fill:#ffa,stroke:#333,stroke-width:2px
+```
 
 ### Messages
 
 At the heart of the CQRS system are three types of messages:
 
-* Commands: Represent intentions to change state (e.g., CreateUserCommand, UpdateProductCommand)
-* Queries: Represent requests for information without side effects (e.g., GetUserByIdQuery, ListProductsQuery)
-* Events: Represent notifications that something has happened (e.g., UserCreatedEvent, OrderShippedEvent)
+* **Commands**: Represent intentions to change state (e.g., `CreateUserCommand`, `UpdateProductCommand`)
+* **Queries**: Represent requests for information without side effects (e.g., `GetUserByIdQuery`, `ListProductsQuery`)
+* **Events**: Represent notifications that something has happened (e.g., `UserCreatedEvent`, `OrderShippedEvent`)
 
-Messages in this implementation are simple PHP objects, intentionally free from framework-specific dependencies. This 
-design choice keeps your domain logic clean and portable.
+Messages in this implementation are simple PHP objects, intentionally free from framework-specific dependencies. This design choice keeps your domain logic clean and portable.
 
 ### Handlers
 
 For each message type, there are corresponding handlers:
 
-* Command Handlers: Process commands and modify state
-* Query Handlers: Process queries and return data
-* Event Handlers: React to events (and multiple handlers can respond to a single event)
+* **Command Handlers**: Process commands and modify state
+* **Query Handlers**: Process queries and return data
+* **Event Handlers**: React to events (and multiple handlers can respond to a single event)
 
 Handlers are services available in the dependency container. Using PHP 8 attributes, you can easily mark methods as handlers:
 
@@ -70,11 +88,11 @@ public function notifyOnUserCreated(UserCreatedEvent $event)
 
 Message buses serve as the transport mechanism that connects messages to their handlers:
 
-* Command Bus: Routes commands to their respective command handlers
-* Query Bus: Routes queries to their respective query handlers and returns results
-* Event Bus: Distributes events to all registered event handlers
+* **Command Bus**: Routes commands to their respective command handlers
+* **Query Bus**: Routes queries to their respective query handlers and returns results
+* **Event Bus**: Distributes events to all registered event handlers
 
-### How does it all fit together?
+### How Does It All Fit Together?
 
 When a command is dispatched through the Command Bus:
 
@@ -83,7 +101,45 @@ When a command is dispatched through the Command Bus:
 3. The handler processes the command, potentially emitting events
 4. Events are published to the Event Bus, triggering any relevant event handlers
 
-Queries follow a similar flow but return data to the caller.
+Command flow:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant CommandBus
+    participant CommandHandler
+    participant Database
+    participant EventBus
+    participant EventHandler
+    
+    Client->>CommandBus: dispatch(CreateUserCommand)
+    CommandBus->>CommandBus: Apply middleware
+    CommandBus->>CommandHandler: execute
+    CommandHandler->>Database: save user
+    CommandHandler->>EventBus: publish(UserCreatedEvent)
+    EventBus->>EventHandler: handle(UserCreatedEvent)
+    EventHandler->>Database: log audit entry
+    CommandHandler-->>CommandBus: void
+    CommandBus-->>Client: success
+```
+
+Query flow:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant QueryBus
+    participant QueryHandler
+    participant Database
+    
+    Client->>QueryBus: dispatch(GetUserByIdQuery)
+    QueryBus->>QueryBus: Apply middleware
+    QueryBus->>QueryHandler: execute
+    QueryHandler->>Database: find user
+    Database-->>QueryHandler: user data
+    QueryHandler-->>QueryBus: User object
+    QueryBus-->>Client: User object
+```
 
 ## Configuration
 
