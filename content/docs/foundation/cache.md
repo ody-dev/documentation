@@ -2,20 +2,52 @@
 title: Cache
 ---
 
-This module is fully compliant with PSR-6 (Cache) and PSR-16 (SimpleCache) standards.
+## Overview
 
-## Features
-
-- Simple facade-based API for easy cache access
 - Multiple storage driver support:
     - Redis (using native phpredis with Swoole runtime hooks)
     - Memcached (using native Memcached extension with Swoole runtime hooks)
     - Array (in-memory, for testing)
 - PSR-6 and PSR-16 compliant interfaces
 - Cache tagging for grouped invalidation
-- Coroutine-safe implementation for high concurrency
-- Automatic serialization of complex data types
 - Configurable default TTL (Time To Live)
+
+## Configuration
+
+The cache configuration is typically located in `config/cache.php`. You can configure:
+
+- Default driver
+- Driver-specific settings (hosts, ports, etc.)
+- Default TTL values
+- Key prefixes
+
+Example configuration:
+
+```php
+return [
+    'default' => 'redis', // Default driver
+    'drivers' => [
+        'redis' => [
+            'host' => '127.0.0.1',
+            'port' => 6379,
+            'auth' => null, // Optional password
+            'db' => 0,      // Database index
+            'prefix' => 'app:cache:',
+            'ttl' => 3600   // Default TTL in seconds
+        ],
+        'memcached' => [
+            'servers' => [
+                ['host' => '127.0.0.1', 'port' => 11211, 'weight' => 100],
+            ],
+            'prefix' => 'app:cache:',
+            'ttl' => 3600
+        ],
+        'array' => [
+            'ttl' => 3600
+        ]
+    ]
+];
+```
 
 ## Basic Usage
 
@@ -135,43 +167,6 @@ $pool->saveDeferred($item);
 
 // Commit all deferred saves at once
 $pool->commit();
-```
-
-## Configuration
-
-The cache configuration is typically located in `config/cache.php`. You can configure:
-
-- Default driver
-- Driver-specific settings (hosts, ports, etc.)
-- Default TTL values
-- Key prefixes
-
-Example configuration:
-
-```php
-return [
-    'default' => 'redis', // Default driver
-    'drivers' => [
-        'redis' => [
-            'host' => '127.0.0.1',
-            'port' => 6379,
-            'auth' => null, // Optional password
-            'db' => 0,      // Database index
-            'prefix' => 'app:cache:',
-            'ttl' => 3600   // Default TTL in seconds
-        ],
-        'memcached' => [
-            'servers' => [
-                ['host' => '127.0.0.1', 'port' => 11211, 'weight' => 100],
-            ],
-            'prefix' => 'app:cache:',
-            'ttl' => 3600
-        ],
-        'array' => [
-            'ttl' => 3600
-        ]
-    ]
-];
 ```
 
 ## Performance Considerations
