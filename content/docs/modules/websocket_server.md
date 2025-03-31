@@ -3,17 +3,12 @@ title: Websocket Server
 weight: 7
 ---
 
-A robust, feature-rich PHP WebSocket server for building real-time applications.
-
-## Overview
-
 Ody WebSocket is a high-performance WebSocket server implementation that provides a complete solution for building 
 real-time applications. Built on top of Swoole's coroutine capabilities, it offers excellent performance, scalability, 
 and a clean API for developers.
 
 ## Features
 
-- **High Performance**: Leverages Swoole's coroutines for efficient, non-blocking I/O operations
 - **Channel System**: Supports public, private, and presence channels for various use cases
 - **Authentication**: Secure your WebSockets with token-based authentication
 - **Middleware Pipeline**: Flexible middleware system for request/response processing
@@ -29,9 +24,7 @@ and a clean API for developers.
 composer require ody/websocket
 ```
 
-## Getting Started
-
-### Configure Your Server
+### Configuration
 
 Create/edit the `config/websocket.php` file to configure your WebSocket server:
 
@@ -151,6 +144,8 @@ Include WebsocketServiceProvider in the provider section of the config
     // ...
 ],
 ```
+
+## Usage
 
 ### Start the Server
 
