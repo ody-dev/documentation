@@ -140,6 +140,3 @@ despite their similar ability to handle background jobs.
     - You need built-in result handling
     - You prefer a simpler API with less boilerplate
     - Your background jobs are initiated by client requests
-
-Your ProcessManager implementation provides a more structured and object-oriented approach to processes, making them 
-easier to work with than raw Swoole processes, which helps bridge some of the usability gap between processes and tasks.
