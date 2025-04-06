@@ -18,30 +18,11 @@ Key features:
 composer require ody/cqrs
 ```
 
+To enable async functionality install ody/amqp, see the amqp section in the sidebar.
+
 ## Introduction
 
 Command Query Responsibility Segregation is an architectural pattern that separates read operations (Queries) from write operations (Commands). This separation allows for specialized optimization of each path, increased scalability, and better maintainability of your codebase.
-
-```mermaid
-graph LR
-    subgraph "CQRS Architecture"
-        W[Client Write]-->|Commands|CB[Command Bus]
-        CB-->|Process|CH[Command Handlers]
-        CH-->|Modify|DB[(Database)]
-        CH-->|Emit|EB[Event Bus]
-        EB-->|Notify|EH[Event Handlers]
-        
-        R[Client Read]-->|Queries|QB[Query Bus]
-        QB-->|Fetch|QH[Query Handlers]
-        QH-->|Read|DB
-    end
-    
-    style W fill:#f9f,stroke:#333,stroke-width:2px
-    style R fill:#bbf,stroke:#333,stroke-width:2px
-    style CB fill:#afa,stroke:#333,stroke-width:2px
-    style QB fill:#aff,stroke:#333,stroke-width:2px
-    style EB fill:#ffa,stroke:#333,stroke-width:2px
-```
 
 ### Messages
 
@@ -175,6 +156,30 @@ return [
         ],
     ],
 ];
+```
+
+### Configure Service providers
+Register the required service providers in your config/app.php:
+
+```php
+
+'providers' => [
+    'http' => [
+        // ... other providers
+        \Ody\CQRS\Providers\CQRSServiceProvider::class,
+
+        // ... for async handling
+//        \Ody\AMQP\Providers\AMQPServiceProvider::class,
+//        \Ody\CQRS\Providers\CQRSServiceProvider::class, // must me registered after AMQPServiceProvider!
+//        \Ody\CQRS\Providers\AsyncMessagingServiceProvider::class,
+    ],
+    // Also for async handling, registers long running background processes
+    'beforeServerStart' => [
+//            \Ody\Process\Providers\ProcessServiceProvider::class,
+//            \Ody\CQRS\Providers\CQRSServiceProvider::class,
+//            \Ody\AMQP\Providers\AMQPServiceProvider::class,
+    ]
+],
 ```
 
 ## Usage
@@ -418,7 +423,7 @@ class TransactionalMiddleware
 }
 ```
 
-## API Integration
+<!-- ## API Integration
 
 The CQRS module can be easily integrated with your API layer to expose commands and queries as RESTful endpoints.
 
@@ -466,9 +471,9 @@ class UserController extends CqrsController
         return $this->query(GetUserByIdQuery::class, $request);
     }
 }
-```
+``` -->
 
-### Set Up Middleware
+<!-- ### Set Up Middleware
 
 ```php
 <?php
@@ -494,4 +499,4 @@ $responseFormattingMiddleware = new ResponseFormattingMiddleware($response);
 // Add middleware to your application
 $app->add($responseFormattingMiddleware);
 $app->add($requestMappingMiddleware);
-```
+``` -->

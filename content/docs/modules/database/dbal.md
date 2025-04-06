@@ -16,53 +16,40 @@ In your `config/database.php`:
 
 ```php
 return [
-    'connection_pool_enabled' => env('DB_CONNECTION_POOL_ENABLED', true),
-    'connection_pool_size' => env('DB_CONNECTION_POOL_SIZE', 32),
-    
-    'environments' => [
-        'local' => [
-            'driver' => env('DB_DRIVER', 'mysql'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', 3306),
-            'database' => env('DB_DATABASE', 'ody'),
-            'username' => env('DB_USERNAME', 'ody'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8mb4'),
-            // Other database settings...
+    // ...    
+    'local' => [
+        'adapter' => 'mysql',
+        'host' => env('DB_HOST', '127.0.0.1'),
+        'port' => env('DB_PORT', 3306),
+        'username' => env('DB_USERNAME', 'root'),
+        'password' => env('DB_PASSWORD', 'root'),
+        'db_name' => env('DB_DATABASE', 'ody'),
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_general_ci',
+        'prefix' => '',
+        'options' => [
+            // PDO::ATTR_EMULATE_PREPARES => true,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_CASE,
+            PDO::CASE_LOWER,
+            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            PDO::MYSQL_ATTR_DIRECT_QUERY => false,
+            // Max packet size for large data transfers
+            // PDO::MYSQL_ATTR_MAX_BUFFER_SIZE => 16777216, // 16MB
         ],
-        // Other environments...
+        'pool' => [
+            'enabled' => env('DB_ENABLE_POOL', false),
+            'pool_name' => env('DB_POOL_NAME', 'default'),
+            'connections_per_worker' => env('DB_POOL_CONN_PER_WORKER', 10),
+            'minimum_idle' => 5,
+            'idle_timeout' => 60.0,
+            'max_lifetime' => 3600.0,
+            'borrowing_timeout' => 1,
+            'returning_timeout' => 0.5,
+            'leak_detection_threshold' => 10.0,
+        ]
     ],
-];
-```
-
-### DBAL-specific Configuration
-
-In your `config/dbal.php`:
-
-```php
-return [
-    'default' => env('DBAL_CONNECTION', 'default'),
-    
-    'connections' => [
-        'default' => [
-            'driver' => env('DB_DRIVER', 'mysql'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'ody'),
-            'username' => env('DB_USERNAME', 'ody'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8mb4'),
-            'options' => [
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ],
-            'pooling' => [
-                'pool_name' => 'dbal-default',
-            ],
-        ],
-        // Other connections...
-    ],
+    // ...
 ];
 ```
 
@@ -73,9 +60,11 @@ Register the DBAL service provider in your application:
 ```php
 // In your service provider configuration
 $providers = [
-    // Other providers...
-    \Ody\DB\Providers\DatabaseServiceProvider::class,
-    \Ody\DB\Providers\DBALServiceProvider::class,
+    'http' => [
+        // Other providers...
+        \Ody\DB\Providers\DatabaseServiceProvider::class,
+        \Ody\DB\Providers\DBALServiceProvider::class,
+    ]
 ];
 ```
 
