@@ -51,10 +51,19 @@ return [
             'username' => 'your_username',
             'password' => 'your_password',
             'charset' => 'utf8mb4',
+            'pool' => [
+                'enabled' => env('DB_ENABLE_POOL', false),
+                'pool_name' => env('DB_POOL_NAME', 'default'),
+                'connections_per_worker' => env('DB_POOL_CONN_PER_WORKER', 10),
+                'minimum_idle' => 5,
+                'idle_timeout' => 60.0,
+                'max_lifetime' => 3600.0,
+                'borrowing_timeout' => 1,
+                'returning_timeout' => 0.5,
+                'leak_detection_threshold' => 10.0,
+            ]
         ],
-    ],
-    'connection_pool_enabled' => true,
-    'pool_size' => 10,
+    ]
 ];
 ```
 
