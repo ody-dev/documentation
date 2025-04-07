@@ -11,7 +11,7 @@ designed to maximize performance in Swoole environments by efficiently managing 
 ## Features
 
 - Connection pooling with Swoole coroutine awareness
-- Support for Eloquent ORM, Doctrine ORM, and standalone DBAL
+- Support for Doctrine ORM, and standalone DBAL
 - Automatic connection binding to coroutines
 - Built-in connection lifecycle management
 - Connection health checks and leak detection
@@ -21,11 +21,6 @@ designed to maximize performance in Swoole environments by efficiently managing 
 
 ```bash
 composer require ody/database
-```
-
-### Eloquent
-```bash
-composer require illuminate/database
 ```
 
 ### Doctrine ORM
@@ -63,22 +58,6 @@ return [
 ];
 ```
 
-### Using with Eloquent
-
-```php
-use Ody\DB\Eloquent\Facades\DB;
-use App\Models\User;
-
-// Initialize Eloquent
-Ody\DB\Eloquent\Eloquent::boot(config('database.environments')['local']);
-
-// Using the Facade
-$users = DB::table('users')->where('active', 1)->get();
-
-// Using Eloquent models
-$user = User::find(1);
-```
-
 ### Using with Doctrine ORM
 
 ```php
@@ -97,13 +76,11 @@ $entityManager->flush();
 ### Using with Doctrine DBAL
 
 ```php
-use Ody\DB\Doctrine\Facades\DBAL;
-
 // Execute queries
-$users = DBAL::fetchAllAssociative('SELECT * FROM users WHERE active = ?', [1]);
+$users = $this->connection->fetchAllAssociative('SELECT * FROM users WHERE active = ?', [1]);
 
 // Using query builder
-$queryBuilder = DBAL::createQueryBuilder();
+$queryBuilder = $this->connection->createQueryBuilder();
 $result = $queryBuilder
     ->select('u.*')
     ->from('users', 'u')
