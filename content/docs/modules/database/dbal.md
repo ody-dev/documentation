@@ -70,27 +70,51 @@ $providers = [
 
 ## Basic Usage
 
-### Using the DBAL Facade
-
-The simplest way to use DBAL is through the provided facade:
-
 ```php
-use Ody\DB\Doctrine\Facades\DBAL;
+<?php
 
-// Execute a simple query
-$users = DBAL::fetchAllAssociative(
-    'SELECT * FROM users WHERE status = ?',
-    ['active']
-);
+namespace App\Services; // Or Repository, Controller, etc.
 
-// Get a single value
-$count = DBAL::fetchOne('SELECT COUNT(*) FROM users');
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Psr\Log\LoggerInterface;
 
-// Execute an update/insert
-$affected = DBAL::executeStatement(
-    'UPDATE users SET last_login = ? WHERE id = ?',
-    [new \DateTime(), 123]
-);
+class MyService
+{
+    private Connection $connection;
+    private LoggerInterface $logger;
+
+    public function __construct(Connection $dbConnection, LoggerInterface $logger)
+    {
+        $this->connection = $dbConnection; // The container injects the correct instance
+        $this->logger = $logger;
+    }
+
+    // Example methods using the injected connection:
+    public function getActiveUsers(): array
+    {
+        // Execute a simple query
+        return $this->connection->fetchAllAssociative(
+            'SELECT * FROM users WHERE status = ?',
+            ['active']
+        );
+    }
+
+    public function getUserCount(): int
+    {
+        // Get a single value
+        return (int) $this->connection->fetchOne('SELECT COUNT(*) FROM users');
+    }
+
+    public function updateUserLogin(int $userId): int
+    {
+        // Execute an update/insert
+        return $this->connection->executeStatement(
+            'UPDATE users SET last_login = ? WHERE id = ?',
+            [new \DateTime(), $userId]
+        );
+    }
+}
 ```
 
 ### Query Builder
@@ -98,7 +122,7 @@ $affected = DBAL::executeStatement(
 DBAL provides a powerful query builder:
 
 ```php
-$qb = DBAL::createQueryBuilder();
+$qb = $this->connection->createQueryBuilder();
 
 $users = $qb->select('u.id', 'u.name', 'u.email')
     ->from('users', 'u')
@@ -118,7 +142,7 @@ Transactions are fully supported:
 
 ```php
 // Method 1: Using the transaction() helper
-DBAL::transaction(function ($connection) {
+$this->connection->transaction(function ($connection) {
     $connection->executeStatement(
         'INSERT INTO orders (customer_id, total) VALUES (?, ?)',
         [42, 99.99]
@@ -126,14 +150,14 @@ DBAL::transaction(function ($connection) {
     
     $orderId = $connection->lastInsertId();
     
-    $connection->executeStatement(
+    $this->connection->executeStatement(
         'INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)',
         [$orderId, 101, 1]
     );
 });
 
 // Method 2: Manual transaction control
-DBAL::beginTransaction();
+$this->connection->beginTransaction();
 try {
     DBAL::executeStatement('INSERT INTO logs (message) VALUES (?)', ['Starting process']);
     // More operations...
@@ -150,7 +174,7 @@ Work with database schema:
 
 ```php
 // Get the schema manager
-$schemaManager = DBAL::getSchemaManager();
+$schemaManager = $this->connection->getSchemaManager();
 
 // List all tables
 $tables = $schemaManager->listTableNames();
@@ -172,7 +196,7 @@ You can work with multiple database connections:
 
 ```php
 // Get a specific connection
-$analytics = DBAL::connection('analytics');
+$analytics = $this->connection->connection('analytics');
 
 // Use it for queries
 $stats = $analytics->fetchAllAssociative(
@@ -193,7 +217,7 @@ use Doctrine\DBAL\Types\Type;
 Type::addType('point', MyPointType::class);
 
 // Use the custom type in a query
-$stmt = DBAL::executeQuery(
+$stmt = $this->connection->executeQuery(
     'SELECT * FROM locations WHERE point = ?',
     [$point],
     ['point']
@@ -205,7 +229,7 @@ $stmt = DBAL::executeQuery(
 If needed, you can access the underlying PDO connection:
 
 ```php
-$pdo = DBAL::getNativeConnection();
+$pdo = $this->connection->getNativeConnection();
 // Use PDO directly (use with caution)
 ```
 
@@ -218,7 +242,7 @@ $pdo = DBAL::getNativeConnection();
 $cache = new \Doctrine\DBAL\Cache\QueryCacheProfile(3600, 'query_cache_key');
 
 // Execute with caching
-$result = DBAL::executeQuery(
+$result = $this->connection->executeQuery(
     'SELECT * FROM large_table WHERE complex_condition = ?',
     [42],
     [],
@@ -238,7 +262,7 @@ For large operations, use batch processing:
 ```php
 DBAL::beginTransaction();
 try {
-    $stmt = DBAL::prepare('INSERT INTO items (name, value) VALUES (?, ?)');
+    $stmt = $this->connection->prepare('INSERT INTO items (name, value) VALUES (?, ?)');
     
     foreach ($items as $i => $item) {
         $stmt->bindValue(1, $item['name']);
