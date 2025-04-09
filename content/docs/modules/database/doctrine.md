@@ -1,9 +1,8 @@
 ---
 title: Doctrine ORM
 ---
-# Using Doctrine ORM with ODY Framework
 
-This guide provides a comprehensive overview of how to use Doctrine ORM (Object-Relational Mapping) with the ODY framework, enabling efficient entity mapping and management in Swoole-based applications.
+This guide provides a comprehensive overview of how to use Doctrine ORM (Object-Relational Mapping) with the ODY framework, enabling efficient entity mapping and management.
 
 ## Overview
 
